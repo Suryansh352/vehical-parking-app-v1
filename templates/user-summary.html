@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Summary</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Welcome, {{ user.email }}</h2>
+
+    <p>Total Parking Sessions: {{ total_sessions }}</p>
+    <p>Total Parking Time (hours): {{ "%.2f"|format(total_duration_hours) }}</p>
+    <p>Total Amount Payable: ₹{{ "%.2f"|format(total_cost) }}</p>
+
+    <h3>Current Reservations</h3>
+    {% if current_reservations %}
+        <ul class="list-group">
+        {% for r in current_reservations %}
+            <li class="list-group-item">
+                Spot ID: {{ r.spot_id }},
+                Lot: {{ r.spot.lot.prime_location_name }},
+                Parked At: {{ r.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No active parking spots reserved currently.</p>
+    {% endif %}
+
+    <h3>Past Reservations</h3>
+    {% if past_reservations %}
+        <ul class="list-group">
+        {% for r in past_reservations %}
+            <li class="list-group-item">
+                Spot ID: {{ r.spot_id }},
+                Lot: {{ r.spot.lot.prime_location_name }},
+                Parked At: {{ r.parking_timestamp.strftime('%Y-%m-%d %H:%M') }},
+                Left At: {{ r.leaving_timestamp.strftime('%Y-%m-%d %H:%M') }},
+                Cost: ₹{{ "%.2f"|format(r.parking_cost or 0) }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No past reservations.</p>
+    {% endif %}
+
+    <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+</body>
+</html>

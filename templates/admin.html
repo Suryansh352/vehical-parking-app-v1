@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Welcome Admin</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <style>
+            #form-body{
+                margin-top: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main">
+            <div id="canvas">
+                <div id="form-body">
+                    <h1>Create new parking slots form</h1>
+                    <form action="/create" method="post">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Parking Slot Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="loca" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="loca" name="location" placeholder="Parking Slot Location">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pincode" class="form-label">Pin code</label>
+                        <input type="number" class="form-control" id="pincode" name="pincode" placeholder=" ">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Price" class="form-label">Price (per hour)</label>
+                        <input type="number" class="form-control" id="Price" name="price" placeholder=" ">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Tspots" class="form-label">Total spots</label>
+                        <input type="number" class="form-control" id="Tspots" name="total_spots" placeholder="  " >
+                    </div>
+                        <div class="d-flex justify-content-center gap-5 mt-4">
+                            <input type="submit" class="btn btn-dark" name="action" value="Create">
+                            <input type="submit" class="btn btn-dark" name="action" value="Cancel">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> 
+    </body>
+</html>

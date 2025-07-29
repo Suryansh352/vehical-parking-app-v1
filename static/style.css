@@ -1,0 +1,37 @@
+*{
+    margin:0px;
+}
+
+#main, canvas{
+    border: 2px solid black;
+}
+
+#canvas{
+    width: 60%;
+    margin: auto;
+    height: 800px;
+    border: 2px solid black 
+}
+
+#form-body{
+    width:400px;
+    height:auto;
+    border:1px solid grey;
+    margin: auto;
+    margin-top:200px;
+    padding: 10px;
+    border-radius: 5px;
+
+}
+
+.headings{
+    margin:2px;
+    padding:2px;
+    margin-top:10px;
+}
+
+.card {
+    border-radius: 15px !important;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

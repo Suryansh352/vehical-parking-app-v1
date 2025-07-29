@@ -1,0 +1,40 @@
+python
+>>> from app import *
+>>> db.create_all()
+
+user1= User(username="admin123", password_hash="1234", is_admin=True)
+db.session.add(user1)
+db.session.commit()
+
+
+PS C:\Users\surya\.vscode\project\vehical-parking-app-v1> python
+Python 3.12.6 (tags/v3.12.6:a4a2d2b, Sep  6 2024, 20:11:23) [MSC v.1940 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from app import *
+>>> user1=User(username="Ansh",password_hash="1234")
+>>> db.session.add(user1)
+>>> db.session.commit
+<bound method scoped_session.commit of <sqlalchemy.orm.scoping.scoped_session object at 0x0000018353CF81D0>>
+>>> db.session.commit()
+>>> user1=User(username="yash",password_hash="1234")
+>>> db.session.add(user1)
+>>> db.session.commit()
+>>> user3=User.query.filter_by(username="yash").first()
+>>> user3
+<User 3>
+>>> user3.username = "Yash"
+>>> db.session.commit()
+>>> user3.password_hash="2345"
+>>> db.session.commit()
+>>> u1=User.query.get(3)
+<stdin>:1: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+>>> db.session.delete(u1)
+>>> db.session.commit()
+>>> users=User.query.all()
+>>> users
+[<User 1>, <User 2>]
+>>> users[0]
+<User 1>
+>>> u1.username
+'Yash'
+>>> exit()
