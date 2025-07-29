@@ -12,6 +12,12 @@
     <p>Total Parking Time (hours): {{ "%.2f"|format(total_duration_hours) }}</p>
     <p>Total Amount Payable: ₹{{ "%.2f"|format(total_cost) }}</p>
 
+    <h3>Your Parking Sessions per Month</h3>
+{% if plot_data %}
+    <img src="data:image/png;base64,{{ plot_data }}" alt="Parking Sessions Chart" class="img-fluid mb-4">
+{% endif %}
+
+
     <h3>Current Reservations</h3>
     {% if current_reservations %}
         <ul class="list-group">

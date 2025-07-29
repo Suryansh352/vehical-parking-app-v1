@@ -16,8 +16,8 @@ app = create_app()
 from application.controllers import *
 
 if __name__=='__main__':
-    db.create_all()
-    user1= User(email="admin123@gmail.com", password_hash="1234", is_admin=True)
-    db.session.add(user1)
-    db.session.commit()
-    #app.run()
+    #db.create_all()
+    #user1= User(email="admin123@gmail.com", password_hash="1234", is_admin=True)
+    #db.session.add(user1)
+    #db.session.commit()
+    app.run()

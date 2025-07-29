@@ -1,6 +1,11 @@
 from flask import Flask, flash, render_template,redirect,request, session,url_for
 from flask import current_app as app
 from datetime import datetime
+import matplotlib.pyplot as plt
+import io
+import base64
+from collections import defaultdict
+import calendar
 
 
 from .models import *
@@ -222,6 +227,7 @@ def home():
 
 @app.route('/admin/users')
 def admin_view_users():
+    
 
     if 'user_email' not in session:
         flash("Please log in first.", "warning")
@@ -237,7 +243,6 @@ def admin_view_users():
 
 @app.route('/admin/summary')
 def admin_summary():
-
     if 'user_email' not in session:
         return redirect(url_for('login'))
     user = User.query.filter_by(email=session['user_email']).first()
@@ -251,7 +256,6 @@ def admin_summary():
     occupied_spots = ParkingSpot.query.filter_by(status='O').count()
     total_users = User.query.count()
 
-  
     parking_lots = ParkingLot.query.all()
     lots_info = []
     for lot in parking_lots:
@@ -267,10 +271,41 @@ def admin_summary():
 
     recent_reservations = Reservation.query.order_by(Reservation.parking_timestamp.desc()).limit(10).all()
 
-    return render_template('admin-summary.html', total_lots=total_lots, total_spots=total_spots,
-                           available_spots=available_spots, occupied_spots=occupied_spots,
-                           total_users=total_users, lots_info=lots_info,
-                           recent_reservations=recent_reservations)
+
+    lot_names = [lot['name'] for lot in lots_info]
+    occupied_counts = [lot['occupied_spots'] for lot in lots_info]
+    available_counts = [lot['available_spots'] for lot in lots_info]
+
+
+    plt.figure(figsize=(10,6))
+    bar_width = 0.4
+    indices = range(len(lot_names))
+
+    plt.bar(indices, occupied_counts, bar_width, label='Occupied', color='salmon')
+    plt.bar([i + bar_width for i in indices], available_counts, bar_width, label='Available', color='lightgreen')
+    plt.xlabel('Parking Lots')
+    plt.ylabel('Number of Spots')
+    plt.title('Parking Spots Occupied vs Available per Lot')
+    plt.xticks([i + bar_width/2 for i in indices], lot_names, rotation=45, ha='right')
+    plt.legend()
+    plt.tight_layout()
+
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    plot_data = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    return render_template('admin-summary.html',
+                           total_lots=total_lots,
+                           total_spots=total_spots,
+                           available_spots=available_spots,
+                           occupied_spots=occupied_spots,
+                           total_users=total_users,
+                           lots_info=lots_info,
+                           recent_reservations=recent_reservations,
+                           plot_data=plot_data)
+
 @app.route('/user/summary')
 def user_summary():
     if 'user_email' not in session:
@@ -286,6 +321,44 @@ def user_summary():
     total_sessions = len(reservations)
     total_duration = 0
     total_cost = 0
+
+
+    monthly_sessions = defaultdict(int)
+    for r in past_reservations:
+        month = r.parking_timestamp.month
+        monthly_sessions[month] += 1
+        if r.parking_cost:
+            total_cost += r.parking_cost
+        duration = (r.leaving_timestamp - r.parking_timestamp).total_seconds() if r.leaving_timestamp else 0
+        total_duration += duration
+
+    total_duration_hours = total_duration / 3600
+
+    months = [calendar.month_abbr[m] for m in sorted(monthly_sessions.keys())]
+    session_counts = [monthly_sessions[m] for m in sorted(monthly_sessions.keys())] 
+
+    plt.figure(figsize=(6,4))
+    plt.bar(months, session_counts, color="skyblue")
+    plt.xlabel('Month')
+    plt.ylabel('Parking Sessions')
+    plt.title('Parking Sessions per Month')
+    plt.tight_layout()
+
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    plot_data = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    return render_template('user-summary.html',
+                           user=user,
+                           current_reservations=current_reservations,
+                           past_reservations=past_reservations,
+                           total_sessions=total_sessions,
+                           total_duration_hours=total_duration_hours,
+                           total_cost=total_cost,
+                           plot_data=plot_data)
+
 
     for r in past_reservations:
         duration = (r.leaving_timestamp - r.parking_timestamp).total_seconds() if r.leaving_timestamp else 0
